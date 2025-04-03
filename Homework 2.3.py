@@ -1,46 +1,47 @@
 class Car:
-   
-
-    def init(self, make, model):
-       
+    def __init__(self, make, model):
         self.make = make
         self.model = model
 
-    def getattr(self, item):
-       
+    def __getattr__(self, item):
         return "This attribute is not available"
 
 
-# Пример использования
-c = Car("Toyota", "Corolla")
-print(c.make)
-print(c.model)
-print(c.color)
+# Пример использования:
+my_car = Car("Toyota", "Prius")
+
+print(my_car.make)   # Toyota
+print(my_car.model)  # Corolla
+print(my_car.color)  # This attribute is not available
+print(my_car.year)   # This attribute is not available
+
 
 # Задача 2
 class Rectangle:
-    
+    __slots__ = ('width', 'height') # Важно: Ограничиваем возможные атрибуты
 
-    def init(self, width, height):
-        
+    def __init__(self, width, height):
         self.width = width
         self.height = height
 
-    def setattr(self, name, value):
-        
-        if name not in self.dict:
+    def __setattr__(self, key, value):
+        if key not in Rectangle.__slots__:  # Теперь проверяем __slots__
             raise AttributeError("Local attributes are not allowed")
-        super().setattr(name, value)
+        super().__setattr__(key, value)
 
-# Пример использования
-r = Rectangle(10, 5)
-print(r.width)
-print(r.height)
+# Пример использования:
+rect = Rectangle(10, 5)
+
+print(rect.width)   # 10
+print(rect.height)  # 5
 
 try:
-    r.color = 'red' 
+    rect.color = "red"  # Вызовет исключение AttributeError
 except AttributeError as e:
-    print(e) 
+    print(e)
 
-r.width = 20 
-print(r.width)
+try:
+    rect.width = 20      # Теперь вызовет исключение, т.к. это не новое значение
+    print(rect.width)
+except AttributeError as e:
+    print(e)
