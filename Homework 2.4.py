@@ -1,94 +1,58 @@
 class Fraction:
-    
-    def new(cls, numerator, denominator):
-       
+    def __new__(cls, numerator, denominator):
         if not isinstance(numerator, int) or not isinstance(denominator, int):
-            raise TypeError("Числитель и знаменатель должны быть целыми числами.")
+            raise TypeError("Числитель и знаменатель должны быть целыми числами")
         if denominator == 0:
-            raise ZeroDivisionError("Знаменатель не может быть равен 0.")
-        return super().new(cls)
+            raise ZeroDivisionError("Знаменатель не может быть равен нулю")
+        return super().__new__(cls)
 
-    def init(self, numerator, denominator):
-      
-        self.numerator = numerator
-        self.denominator = denominator
-        self.value = round(numerator / denominator, 3) # Вычисляем значение при инициализации
-
-    def __str(self):
-     
-        return f"{self.numerator}/{self.denominator}"
-
-    def add(self, other):
-       
-        new_numerator = self.numerator * other.denominator + other.numerator * self.denominator
-        new_denominator = self.denominator * other.denominator
-        return Fraction(new_numerator, new_denominator)
-
-    def sub(self, other):
-        
-        new_numerator = self.numerator * other.denominator - other.numerator * self.denominator
-        new_denominator = self.denominator * other.denominator
-        return Fraction(new_numerator, new_denominator)
-
-    def mul(self, other):
-        
-        new_numerator = self.numerator * other.numerator
-        new_denominator = self.denominator * other.denominator
-        return Fraction(new_numerator, new_denominator)
-
-    def truediv(self, other):
-       
-        new_numerator = self.numerator * other.denominator
-        new_denominator = self.denominator * other.numerator
-        return Fraction(new_numerator, new_denominator)
+    def __init__(self, numerator, denominator):
+        self._numerator = numerator
+        self._denominator = denominator
 
     @property
     def value(self):
-       
-        return self.__value
+        return round(self._numerator / self._denominator, 3)
 
+    def __str__(self):
+        return f"{self._numerator}/{self._denominator}"
 
     @staticmethod
-    def is_valid_fraction(numerator, denominator):
-    
-      return isinstance(numerator, int) and isinstance(denominator, int) and denominator != 0
-
+    def is_valid_fraction(numerator, denominator): #Возвращает True если дробь валидна, False - если нет
+        return isinstance(numerator, int) and isinstance(denominator, int) and denominator != 0
 
     @classmethod
-    def from_float(cls, float_value):
-       
-        if not isinstance(float_value, float):
-             raise TypeError("Аргумент должен быть float.")
-        integer_part, decimal_part = str(float_value).split('.')
-        denominator = 10 ** len(decimal_part)
-        numerator = int(integer_part + decimal_part)
+    def create_fraction_from_float(cls, float_number):
+      """Имплементирует создание дроби из вещественного числа. Это сложная тема
+      по причине неточности представления вещественных чисел в памяти компьютера.
+      В реальности требует более сложного алгоритма для преобразования."""
 
-        return cls(numerator, denominator)
+      # Простейший пример, подходящий не для всех случаев, но для демонстрации:
+      integer_part = int(float_number)
+      fractional_part = float_number - integer_part
+      return cls(int(fractional_part * 1000), 1000) #Примерное преобразование
 
-
-# Пример использования
-try:
-    f1 = Fraction(1, 2)
-    f2 = Fraction(3, 4)
-    print(f1 + f2)  # 5/4
-    print(f1 - f2)  # -1/4
-    print(f1 * f2)  # 3/8
-    print(f1 / f2)  # 2/3
-    print(f1.value) # 0.5
-
-    f3 = Fraction(5, 0)
-except ZeroDivisionError as e:
-    print(f"Ошибка: {e}")
+# Пример использования:
 
 try:
-    f4 = Fraction("a", 2)
+    fraction1 = Fraction(1.5, 2) # Вызовет TypeError
 except TypeError as e:
-    print(f"Ошибка: {e}")
+    print(e)
 
-f5 = Fraction.from_float(0.75)
-print(f5)  # 75/100
-print(f5.value)  # 0.75
+try:
+    fraction2 = Fraction(1, 0) # Вызовет ZeroDivisionError
+except ZeroDivisionError as e:
+    print(e)
 
-print(Fraction.is_valid_fraction(5,2)) #True
-print(Fraction.is_valid_fraction(5,0)) #False
-print(Fraction.is_valid_fraction("a",2)) #False
+fraction3 = Fraction(3, 4)
+
+print(fraction3.value) # 0.75
+print(fraction3)       # 3/4
+
+print(Fraction.is_valid_fraction(1, 2))    # True
+print(Fraction.is_valid_fraction(1, 0))    # False
+
+fraction4 = Fraction.create_fraction_from_float(0.625)
+print(fraction4) # 625/1000
+
+
