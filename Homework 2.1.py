@@ -1,19 +1,20 @@
-class Sauce:
-    def init(self, flavor):
-        self.flavor = flavor
+class Soyc:
+    def __init__(self, taste):
+        self.taste = taste
 
     def show_my_sauce(self, addition=""):
         if addition:
-            print(f"Соус и {addition}")
+            print(f"Соус: {self.taste} и {addition}")
         else:
             print("Майонез")
 
+
 class Employee:
-    def init(self, name, age, salary):
-        self.name = name
+    def __init__(self, name, age, salary, bonus=0):
+        self.__name = name
         self.__age = age
         self.__salary = salary
-        self.__bonus = 0  
+        self.__bonus = bonus
 
     def get_name(self):
         return self.__name
@@ -35,47 +36,33 @@ class Employee:
 
 
 class Recipe:
-    def __init(self, name, ingredients):
+    def __init__(self, name, ingredients):
         self.name = name
         self.ingredients = ingredients
 
     def print_ingredients(self):
-        print(f"Ингредиенты для {self.name}:")
+        print("Ингредиенты для приготовления блюда:")
         for ingredient in self.ingredients:
             print(f"- {ingredient}")
 
     def cook(self):
-        print(f"Сегодня мы готовим {self.name}.")
-        print(f"Выполняем инструкцию по приготовлению блюда {self.name}...")
-        print(f"Блюдо {self.name} готово!")
+        print(f"Блюдо '{self.name}' готово!")
 
 
+# Пример использования
+sauce1 = Soyc("Сырный")
+sauce1.show_my_sauce("беконом")
 
-# Sauce Example
-cheese_sauce = Sauce("Сырный")
-cheese_sauce.show_my_sauce("грибы")  
-cheese_sauce.show_my_sauce()        
+sauce2 = Soyc("Чесночный")
+sauce2.show_my_sauce()
 
-# Employee Example
 employee1 = Employee("Иван", 30, 50000)
-print(f"Имя: {employee1.get_name()}")
-print(f"Возраст: {employee1.get_age()}")
-print(f"Зарплата: {employee1.get_salary()}")
+print(employee1.get_name())
+print(employee1.get_total_salary())
 
 employee1.set_bonus(10000)
-print(f"Бонус: {employee1.get_bonus()}")
-print(f"Итоговая зарплата: {employee1.get_total_salary()}")
+print(employee1.get_total_salary())
 
-# Recipe Examples
-
-spaghetti = Recipe("Спагетти болоньезе", ["Спагетти", "Фарш", "Томатный соус", "Лук", "Чеснок", "Соль"])
-
-spaghetti.print_ingredients()
-
-spaghetti.cook()
-
-cake = Recipe("Кекс", ["Мука", "Яйца", "Молоко", "Сахар", "Сливочное масло", "Соль", "Ванилин"])
-
-cake.print_ingredients()
-
-cake.cook()
+recipe1 = Recipe("Борщ", ["Мясо", "Картофель", "Капуста", "Свекла"])
+recipe1.print_ingredients()
+recipe1.cook()
