@@ -1,138 +1,126 @@
 class BankAccount:
-    def init(self, account_number, initial_balance=0):
-        self.account_number = account_number
+    def __init__(self, account_number, initial_balance=0):
+        self.__account_number = account_number
         self.__balance = initial_balance
 
     def deposit(self, amount):
-        if self._is_positive(amount):
+        if self._is_positive_amount(amount):
             self.__balance += amount
-            print(f"Внесено {amount}. Новый баланс: {self.__balance}")
+            return True
         else:
             print("Сумма пополнения должна быть положительной.")
+            return False
 
     def withdraw(self, amount):
-        if self._is_positive(amount):
-            if amount <= self.__balance:
-                self.__balance -= amount
-                print(f"Снято {amount}. Новый баланс: {self.__balance}")
-            else:
-                print("Недостаточно средств на счете.")
+        if self._is_positive_amount(amount) and amount <= self.__balance:
+            self.__balance -= amount
+            return True
         else:
-            print("Сумма снятия должна быть положительной.")
+            print("Сумма снятия должна быть положительной и не превышать баланс.")
+            return False
 
     def get_balance(self):
         return self.__balance
 
-    def get_account_number(self): 
-        return self.__account_number
-
     @staticmethod
-    def _is_positive(amount):  
+    def _is_positive_amount(amount):
         return amount > 0
 
     @classmethod
-    def create_empty_account(cls, account_number):
-        return cls(account_number)  
+    def create_account_with_zero_balance(cls, account_number):
+        return cls(account_number)
 
-# --- Example Usage ---
-acc = BankAccount.create_empty_account("123456789")
-print(f"Account number: {acc.get_account_number()}")  
-acc.deposit(500)
-acc.withdraw(200)
-print(acc.get_balance())  
-acc.withdraw(-100) 
-acc.withdraw(500) 
-acc.deposit(0)  
 
-acc2 = BankAccount("987654321", 1000)
-print(f"Account number: {acc2.get_account_number()}")
-print(f"Initial balance: {acc2.get_balance()}")
+# Пример использования:
+account1 = BankAccount("12345", 1000)
 
-acc2.deposit(200)
-acc2.withdraw(500)
-print(f"New balance: {acc2.get_balance()}")
+print(f"Баланс: {account1.get_balance()}")
+
+account1.deposit(500)
+print(f"Баланс после пополнения: {account1.get_balance()}")
+
+account1.withdraw(200)
+print(f"Баланс после снятия: {account1.get_balance()}")
+
+account1.withdraw(2000)  # Попытка снять больше, чем есть на счете
+
+account2 = BankAccount.create_account_with_zero_balance("67890")
+print(f"Баланс нового счета: {account2.get_balance()}")
+
 
 # Задача 2
 class User:
-    def __init(self, username, password):
-        self.username = username
-        self.__password = password
+    def __init__(self, username, password):
+        self.__username = username
+        if User._is_strong_password(password):
+            self.__password = password
+        else:
+            raise ValueError("Пароль должен содержать не менее 6 символов.")
 
-    def get_username(self):
-        return self.__username
-
-    def set_password(self, new_password):
+    def change_password(self, new_password):
         if User._is_strong_password(new_password):
             self.__password = new_password
-            print("Пароль успешно изменён")
+            print("Пароль успешно изменен.")
         else:
-            print("Ошибка: пароль слишком короткий")
-
-    def get_password(self):
-        return self.__password 
+            print("Новый пароль недостаточно сложный.")
 
     @staticmethod
     def _is_strong_password(password):
         return len(password) >= 6
 
     @classmethod
-    def create_default_user(cls, username):
-        default_password = "defaultPassword"
-        if not User._is_strong_password(default_password):
-            raise ValueError("The default password is not secure enough!")
-        return cls(username, default_password)
+    def create_user_with_default_password(cls, username):
+        return cls(username, "default_password")  # Небезопасно, просто для примера
 
-# --- Example Usage ---
-user = User.create_default_user("Alice")
-print(user.get_username())
 
-user.set_password("12345")
-user.set_password("securePass")
-print(user.get_password()) 
+# Пример использования:
+try:
+    user1 = User("john_doe", "123")  # Вызовет ошибку ValueError
+except ValueError as e:
+    print(e)
+
+user2 = User("jane_doe", "password123")  # Создаст пользователя
+
+user2.change_password("short")
+user2.change_password("new_strong_password")
+
+user3 = User.create_user_with_default_password("guest")
+print(f"Пользователь {user3._User__username} создан с паролем по умолчанию.")  # Не рекомендуется обращаться к приватным атрибутам
 
 # Задача 3
+import datetime
+
 class Book:
-   
-    def __init(self, title, author, year):
-       
-        if not Book.is_valid_year(year):
-            raise ValueError("Некорректный год издания.")
+    def __init__(self, title, author, year):
+        if not Book._is_valid_year(year):
+            raise ValueError("Год издания должен быть целым числом и не в будущем.")
         self.__title = title
         self.__author = author
         self.__year = year
 
-    @staticmethod
-    def is_valid_year(year):
-       
-        import datetime
+    def get_info(self):
+        return f"Название: {self.__title}, Автор: {self.__author}, Год издания: {self.__year}"
 
+    @staticmethod
+    def _is_valid_year(year):
         current_year = datetime.datetime.now().year
         return isinstance(year, int) and year <= current_year
 
     @classmethod
     def create_book_without_year(cls, title, author):
-       
-        return cls(title, author, 2024)
+        return cls(title, author, datetime.datetime.now().year) #Использовали текущий год, а не 2024, потому что сейчас не 2024
 
-    def get_info(self):
-        
-        return f"Название: {self.__title}, Автор: {self.__author}, Год: {self.__year}"
-
-
-# Example Usage
-try:
-    book1 = Book("Мастер и Маргарита", "Булгаков", 1967)
-    print(book1.get_info())  
-
-    book2 = Book.create_book_without_year("1984", "Оруэлл")
-    print(book2.get_info())  
-
-    
-    book3 = Book("Незнайка на Луне", "Носов", 2025)
-except ValueError as e:
-    print(f"Ошибка: {e}")  # Ошибка: Некорректный год издания.
+# Пример использования:
 
 try:
-    book4 = Book("Незнайка на Луне", "Носов", "строка")
+    book1 = Book("Мастер и Маргарита", "Булгаков", 2025)
 except ValueError as e:
-    print(f"Ошибка: {e}")
+    print(e)
+
+book2 = Book("1984", "Оруэлл", 1949)
+print(book2.get_info())
+
+book3 = Book.create_book_without_year("Преступление и наказание", "Достоевский")
+print(book3.get_info())
+
+
